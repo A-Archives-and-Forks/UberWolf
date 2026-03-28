@@ -134,13 +134,11 @@ public:
 
 			m_writer.Open(filePath);
 
-			if (!m_seedIndices.empty() && !cryptHeader.empty())
-			{
+			if (!cryptHeader.empty())
 				Write(cryptHeader);
-			}
 			else
 			{
-				if (!m_seedIndices.empty() && fileType != WolfFileType::Project && fileType != WolfFileType::Map)
+				if (fileType != WolfFileType::Project && fileType != WolfFileType::Map)
 					WriteByte(0);
 			}
 		}
@@ -575,7 +573,7 @@ private:
 			header[i] = ReadByte();
 
 		SeedIncides seeds = { 0, 0, 0 };
-		for (size_t i = 0; i < m_seedIndices.size() && i < seeds.size(); i++)
+		for (size_t i = 0; i < m_seedIndices.size(); i++)
 			seeds[i] = header[m_seedIndices[i]];
 
 		m_cryptHeader = header;
