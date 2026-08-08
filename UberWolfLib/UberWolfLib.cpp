@@ -201,7 +201,7 @@ UWLExitCode UberWolfLib::UnpackDataVec(const tStrings& paths)
 		if (IsWolfExtension(fs::path(p).extension()))
 		{
 			UWLExitCode uec = unpackArchive(p);
-			if (uec != UWLExitCode::SUCCESS) return uec;
+			//if (uec != UWLExitCode::SUCCESS) return uec;
 		}
 	}
 
