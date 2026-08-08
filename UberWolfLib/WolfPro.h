@@ -66,6 +66,11 @@ public:
 		return m_proVersion == 2;
 	}
 
+	const uint16_t& GetCryptVersion() const
+	{
+		return m_cryptVersion;
+	}
+
 	bool RemoveProtection();
 	bool DecryptWolfXFiles();
 
@@ -76,6 +81,7 @@ private:
 	Key findDxArcKey(const tString& filePath);
 	Key findDxArcKeyV1(std::vector<uint8_t>& byteData, const uint32_t& fileSize) const;
 	Key findDxArcKeyV2(std::vector<uint8_t>& byteData) const;
+	Key findDxArcKeyCC2(const uint32_t& gameDatSize) const;
 	bool validateProtectionKey(const Key& key) const;
 	bool readFile(const tString& filePath, std::vector<uint8_t>& bytes, uint32_t& fileSize) const;
 	bool writeFile(const tString& filePath, std::vector<uint8_t>& bytes) const;
@@ -98,4 +104,5 @@ private:
 	bool m_isWolfPro        = false;
 	bool m_dataInBaseFolder = false;
 	uint32_t m_proVersion   = 1;
+	uint16_t m_cryptVersion = 0;
 };

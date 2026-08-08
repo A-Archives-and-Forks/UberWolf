@@ -283,12 +283,20 @@ Key WolfPro::findDxArcKey(const tString& filePath)
 
 		if (bytes[0] == 0xA0)
 		{
-			m_proVersion = 1;
+			m_proVersion   = 1;
+			m_cryptVersion = 1000;
 			return findDxArcKeyV1(bytes, fileSize);
+		}
+		else if (bytes[0] == 0xF1)
+		{
+			m_proVersion   = 2;
+			m_cryptVersion = 0xC8;
+			return findDxArcKeyCC2(static_cast<uint32_t>(bytes.size()));
 		}
 		else
 		{
-			m_proVersion = 2;
+			m_proVersion   = 2;
+			m_cryptVersion = 1010;
 			return findDxArcKeyV2(bytes);
 		}
 	}
@@ -328,8 +336,12 @@ Key WolfPro::findDxArcKeyV1(std::vector<uint8_t>& byteData, const uint32_t& file
 
 Key WolfPro::findDxArcKeyV2(std::vector<uint8_t>& byteData) const
 {
-	Key key = wolf::crypt::dxarckey::v2::calcKey(byteData);
-	return key;
+	return wolf::crypt::dxarckey::v2::calcKey(byteData);
+}
+
+Key WolfPro::findDxArcKeyCC2(const uint32_t& gameDatSize) const
+{
+	return wolf::crypt::dxarckey::cc2::calcKey(gameDatSize);
 }
 
 Key WolfPro::findProtectionKey(const tString& filePath)

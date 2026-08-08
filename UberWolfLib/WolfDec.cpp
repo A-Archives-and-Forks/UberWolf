@@ -215,9 +215,11 @@ bool WolfDec::UnpackArchive(const tString& filePath, const bool& override)
 			return false;
 	}
 
-	// Always run the unpacking in a subprocess
+	// Run the unpacking in a subprocess unless during debugging
+#ifndef _DEBUG
 	if (!m_isSubProcess)
 		return runProcess(filePath, m_mode, override);
+#endif
 
 	const CryptMode curMode = (m_mode < DEFAULT_CRYPT_MODES.size() ? DEFAULT_CRYPT_MODES.at(m_mode) : m_additionalModes.at(m_mode - DEFAULT_CRYPT_MODES.size()));
 

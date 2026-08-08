@@ -140,27 +140,4 @@ inline void execute(uint32_t *pState, uint32_t *pKeyStream, const uint32_t &star
 	}
 }
 
-inline void keySetup(const std::array<uint8_t, 4> &data, std::array<uint8_t, 64> &key)
-{
-	static constexpr uint8_t mod1[4] = { 0x3F, 0xA7, 0xD2, 0x1C };
-	static constexpr uint8_t mod2[4] = { 0xB4, 0xE1, 0x9D, 0x58 };
-	static constexpr uint8_t mod3[4] = { 0x6A, 0x2B, 0x4C, 0x8E };
-
-	key = { 0 };
-
-	// Only go to < 63 because the last byte is hard set to 0
-	for (uint32_t i = 0; i < 63; i++)
-	{
-		uint8_t index = i % 4;
-		uint8_t temp  = (data[index] + mod2[index]) ^ (mod1[index] + i + (16 * i));
-
-		if ((i % 2) == 0)
-			temp = (temp >> 5) | (temp << 3);
-		else
-			temp = (temp >> 2) | (temp << 6);
-
-		key[i] = ~(temp ^ data[index] ^ mod3[index]);
-	}
-}
-
 } // namespace wolf::crypt::chacha20

@@ -136,4 +136,51 @@ inline std::vector<uint8_t> calcKey(const std::vector<uint8_t> &gameDataBytes)
 	return key;
 }
 } // namespace v2
+
+namespace cc2
+{
+inline std::array<uint8_t, 4> calcDyn(const uint32_t &gameDatSize)
+{
+	const uint32_t size = gameDatSize - 31;
+
+	const uint32_t remainder = size % 0x064B;
+	const uint32_t x         = size ^ 0x70;
+	const uint32_t sum       = remainder + 152;
+	const uint32_t div4      = (size / 4) + 1285;
+	const uint32_t div2      = (size / 2) + 171;
+
+	return {
+		static_cast<uint8_t>(div4 ^ div2),
+		static_cast<uint8_t>(x + sum),
+		static_cast<uint8_t>(x - div4),
+		static_cast<uint8_t>(div4 * x)
+	};
+}
+
+inline std::vector<uint8_t> calcKey(const uint32_t& gameDatSize)
+{
+	static constexpr uint8_t mod1[4] = { 0x3F, 0xA7, 0xD2, 0x1C };
+	static constexpr uint8_t mod2[4] = { 0xB4, 0xE1, 0x9D, 0x58 };
+	static constexpr uint8_t mod3[4] = { 0x6A, 0x2B, 0x4C, 0x8E };
+	const std::array<uint8_t, 4> data = calcDyn(gameDatSize);
+
+	std::vector<uint8_t> key = std::vector<uint8_t>(64, 0);
+
+	for (uint32_t i = 0; i < 64; i++)
+	{
+		uint8_t index = i % 4;
+		uint8_t temp  = (data[index] + mod2[index]) ^ (mod1[index] + (17 * i));
+
+		if ((i % 2) == 0)
+			temp = (temp >> 5) | (temp << 3);
+		else
+			temp = (temp >> 2) | (temp << 6);
+
+		key[i] = ~(temp ^ data[index] ^ mod3[index]);
+	}
+
+	return key;
+}
+} // namespace cc2
+
 } // namespace wolf::crypt::dxarckey

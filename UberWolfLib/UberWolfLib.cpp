@@ -442,7 +442,7 @@ UWLExitCode UberWolfLib::findDxArcKeyFile(const bool& quiet)
 		return UWLExitCode::KEY_DETECT_FAILED;
 	}
 
-	m_wolfDec.AddAndSetKey("UNKNOWN_PRO", (m_wolfPro.IsProV2() ? 1010 : 1000), false, key);
+	m_wolfDec.AddAndSetKey("UNKNOWN_PRO", m_wolfPro.GetCryptVersion(), false, key);
 	updateConfig(false, key);
 
 	if (!quiet)

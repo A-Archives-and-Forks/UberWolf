@@ -2166,14 +2166,8 @@ int DXArchive::EncodeArchive(const TCHAR *OutputFileName, const std::vector<std:
 
 	if (cryptVersion == 0xC8)
 	{
-		std::array<uint8_t, 4> data;
-		std::array<uint8_t, 64> key;
-
-		std::memcpy(data.data(), (uint8_t *)KeyString_ + KeyStringBytes + 1, 4);
-		wolf::crypt::chacha20::keySetup(data, key);
-
-		std::memcpy(g_cc20Key, key.data(), 32);
-		std::memcpy(g_cc20Nonce, key.data() + 34, 12);
+		std::memcpy(g_cc20Key, KeyString_, 32);
+		std::memcpy(g_cc20Nonce, KeyString_ + 34, 12);
 	}
 
 	uint8_t *pK2 = nullptr;
@@ -2775,14 +2769,8 @@ int DXArchive::DecodeArchive(TCHAR *ArchiveName, const TCHAR *OutputPath, const 
 
 		if (cryptVersion == 0xC8)
 		{
-			std::array<uint8_t, 4> data;
-			std::array<uint8_t, 64> key;
-
-			std::memcpy(data.data(), (uint8_t *)KeyString_ + KeyStringBytes + 1, 4);
-			wolf::crypt::chacha20::keySetup(data, key);
-
-			std::memcpy(g_cc20Key, key.data(), 32);
-			std::memcpy(g_cc20Nonce, key.data() + 34, 12);
+			std::memcpy(g_cc20Key, KeyString_, 32);
+			std::memcpy(g_cc20Nonce, KeyString_ + 34, 12);
 		}
 
 		if (g_newCrypt)
